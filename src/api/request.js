@@ -12,7 +12,11 @@ const service = axios.create({
 
 // 请求拦截器
 service.interceptors.request.use(config => {
-  // 
+  const token = sessionStorage.getItem('token')
+  // 如果token存在，则每次请求都携带token
+  if (token) {
+    config.headers['Authorization'] = token
+  }
   return config
 })
 
@@ -21,9 +25,7 @@ service.interceptors.response.use(
   response => {
     const result = response.data
     // 当状态码非200时，抛出错误
-    if (result.meta.status !== 200) {
-      // 弹框
-      Message.error(result.meta.msg || '未知错误')
+    if (result.meta.status !== 200 && result.meta.status !== 201) {
       // 抛出错误
       return Promise.reject(new Error(result.meta.msg || '未知错误'))
     } else {

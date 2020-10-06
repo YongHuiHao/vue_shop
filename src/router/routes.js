@@ -1,7 +1,7 @@
-// 引入Login组件
 import Login from '@/components/Login'
-// 引入Home组件
 import Home from '@/components/Home'
+import Welcome from '@/components/Home/Welcome'
+import Users from '@/components/Home/Users'
 
 // 向外暴露routes数组
 export default [
@@ -11,7 +11,18 @@ export default [
   },
   {
     path: '/home',
-    component: Home
+    component: Home,
+    redirect: '/home/welcome',
+    children: [
+      {
+        path: 'welcome',
+        component: Welcome
+      },
+      {
+        path: 'users',
+        component: Users
+      }
+    ]
   },
   {
     path: '/',
