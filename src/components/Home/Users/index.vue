@@ -85,6 +85,7 @@
                 type="warning"
                 icon="el-icon-s-tools"
                 size="mini"
+                @click="ShowAllotRoleDialog(scope.row)"
               ></el-button>
             </el-tooltip>
           </template>
@@ -153,6 +154,34 @@
         <el-button type="primary" @click="editUserInfo">确 定</el-button>
       </span>
     </el-dialog>
+    <!-- 分配角色对话框 -->
+    <el-dialog
+      title="分配角色"
+      :visible.sync="allotRoleDialogVisible"
+      width="50%"
+      @close="editDialogClosed"
+    >
+      <div>
+        <p>当前的用户：{{ currentUserInfo.username }}</p>
+        <p>当前的角色：{{ currentUserInfo.role_name }}</p>
+        <p>
+          分配新角色：
+          <el-select v-model="selectedRoleId" placeholder="请选择">
+            <el-option
+              v-for="item in roleList"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="allotRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="allotRole">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -192,12 +221,20 @@ export default {
       total: 0,
       // 用户数据列表
       userList: [],
+      // 角色列表
+      roleList: [],
+      // 当前选择用户信息
+      currentUserInfo: {},
+      // 当前选择的角色id,
+      selectedRoleId: '',
       // 搜索关键字
       keyword: '',
       // 添加用户对话框的显示与隐藏
       addDialogFormVisible: false,
       // 修改用户信息对话框显示与隐藏
       editDialogVisible: false,
+      // 分配角色对话框显示隐藏
+      allotRoleDialogVisible: false,
       // 添加用户数据
       addForm: {
         username: 'admin@333',
@@ -342,6 +379,39 @@ export default {
         this.$message.error('删除用户数据失败')
         console.log(error)
       }
+    },
+    // 分配角色界面显示
+    async ShowAllotRoleDialog (user) {
+      this.currentUserInfo = user
+      try {
+        // 调用接口，获取所有角色列表
+        const result = await this.$API.reqRolesList()
+        this.roleList = result.data
+      } catch (error) {
+        this.$message.error('获取角色列表失败')
+        console.log(error)
+      }
+      // 对话框展示
+      this.allotRoleDialogVisible = true
+    },
+    // 分配角色方法
+    async allotRole () {
+      try {
+        // 调用接口
+        await this.$API.reqAllotUserRole(this.currentUserInfo.id, this.selectedRoleId)
+        this.$message.success('设置角色成功')
+        this.getUserList()
+      } catch (error) {
+        this.$message.error('设置角色失败')
+        console.log(error)
+      }
+      // 界面隐藏
+      this.allotRoleDialogVisible = false
+    },
+    // 分监听配角色对话框关闭事件
+    editDialogClosed () {
+      this.selectedRoleId = ''
+      this.currentUserInfo = {}
     }
   },
   mounted () {

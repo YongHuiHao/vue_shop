@@ -17,3 +17,13 @@ export const reqEditUserInfo = (id, userInfo) => request.put(`users/${id}`, user
 export const reqUserInfoById = (id) => request.get(`users/${id}`)
 // 根据id删除单个用户数据
 export const reqDeleteUserById = (id) => request.delete(`users/${id}`)
+// 获取所有权限列表
+export const reqRightsList = (type) => request.get(`rights/${type}`)
+// 获取角色列表 
+export const reqRolesList = () => request.get('roles')
+// 根据id移除对应权限
+export const reqRemoveRightById = (roleId, rightId) => request.delete(`roles/${roleId}/rights/${rightId}`)
+// 分配角色权限
+export const reqAllotRights = (roleId, rids) => request.post(`roles/${roleId}/rights`, { rids })
+// 分配用户角色
+export const reqAllotUserRole = (id, rid) => request.put(`users/${id}/role`, { rid })

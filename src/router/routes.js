@@ -2,6 +2,9 @@ import Login from '@/components/Login'
 import Home from '@/components/Home'
 import Welcome from '@/components/Home/Welcome'
 import Users from '@/components/Home/Users'
+import Rights from '@/components/Home/Rights'
+import Roles from '@/components/Home/Roles'
+
 
 // 向外暴露routes数组
 export default [
@@ -21,6 +24,14 @@ export default [
       {
         path: 'users',
         component: Users
+      },
+      {
+        path: 'rights',
+        component: Rights
+      },
+      {
+        path: 'roles',
+        component: Roles
       }
     ]
   },
